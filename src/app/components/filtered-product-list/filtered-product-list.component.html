@@ -1,0 +1,18 @@
+<mat-label>Choose an option</mat-label>
+<div>
+  <mat-radio-group [(ngModel)]="selectedOptions" (ngModelChange)="change($event)">
+    <mat-radio-button *ngFor="let item of categoriesList$ | async" [value]="item">
+      {{item}}
+    </mat-radio-button>
+  </mat-radio-group>
+</div>
+<mat-card>
+  <mat-card-title>
+    Products
+  </mat-card-title>
+  <mat-card-content>
+    <mat-list role="list"><mat-list-item role="listitem" *ngFor="let item of products$ | async">
+      {{item.title}} {{item.price}}
+    </mat-list-item></mat-list>
+  </mat-card-content>
+</mat-card>
