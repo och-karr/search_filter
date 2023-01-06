@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
-import {combineLatest, map, Observable, Subject} from 'rxjs';
+import {combineLatest, map, Observable} from 'rxjs';
 import { CategoryService } from '../../services/category.service';
 import {ProductModel} from "../../models/product.model";
 import {ProductService} from "../../services/product.service";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-filtered-product-list',
@@ -13,13 +14,11 @@ import {ProductService} from "../../services/product.service";
 })
 export class FilteredProductListComponent {
   readonly categoriesList$: Observable<string[]> = this._categoryService.getAll();
-  selectedOptions: any;
-  private _categorySubject: Subject<string> = new Subject<string>();
-  public category$: Observable<string> = this._categorySubject.asObservable();
+  readonly category = new FormControl();
 
   readonly products$: Observable<ProductModel[]> = combineLatest([
     this._productService.getAll(),
-    this.category$
+    this.category.valueChanges
   ]).pipe(
     map(([products, category]: [ProductModel[], string]) => {
       return products.filter(product => product.category === category);
@@ -27,9 +26,5 @@ export class FilteredProductListComponent {
   );
 
   constructor(private _categoryService: CategoryService, private _productService: ProductService) {
-  }
-
-  change($event: string) {
-this._categorySubject.next($event);
   }
 }
