@@ -22,7 +22,8 @@ export class MultiFilteredUserListComponent {
 
   readonly filterForm: FormGroup = new FormGroup({
     departmentId: new FormControl(),
-    roleId: new FormControl()
+    roleId: new FormControl(),
+
   });
 
   readonly list$: Observable<UserModel[]> = combineLatest([
@@ -31,15 +32,16 @@ export class MultiFilteredUserListComponent {
     this.filterForm.controls['roleId'].valueChanges
   ]).pipe(
     map(([users, departmentId, roleId]: [UserModel[], string, number]) => {
-      console.log(departmentId, roleId)
+      console.log(users)
       return users
         .filter(
-          user => {
-            if (user.departmentId === +departmentId && user.roleId === +roleId) {
-              console.log(user)
-              return user;
-            } else return [];
-          }
+          user  => user.departmentId === +departmentId && user.roleId === +roleId
+          // user => {
+          //   if (user.departmentId === +departmentId && user.roleId === +roleId) {
+          //     console.log(user)
+          //     return user;
+          //   } else return [];
+          // }
         )
     })
   )
