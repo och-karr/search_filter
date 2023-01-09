@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
 import { FormControl, FormGroup } from '@angular/forms';
 import {combineLatest, map, Observable} from 'rxjs';
 import { DepartmentModel } from '../../models/department.model';
-import { UserModel } from '../../models/user.model';
 import { RoleModel } from '../../models/role.model';
 import { DepartmentService } from '../../services/department.service';
 import { UserService } from '../../services/user.service';
@@ -17,39 +16,38 @@ import { RoleService } from '../../services/role.service';
 })
 export class MultiFilteredUserListComponent {
   readonly departmentList$: Observable<DepartmentModel[]> = this._departmentService.getAll();
-  // readonly userList$: Observable<UserModel[]> = this._userService.getAll();
   readonly roleList$: Observable<RoleModel[]> = this._roleService.getAll();
 
   readonly filterForm: FormGroup = new FormGroup({
-    departmentId: new FormControl(),
-    roleId: new FormControl(),
-
+    department: new FormControl(),
+    role: new FormControl(),
   });
 
-  readonly list$: Observable<UserModel[]> = combineLatest([
+  readonly list$: Observable<{
+    id: string;
+    email: string;
+    role: string;
+    department: string;
+  }[]> = combineLatest([
     this._userService.getAll(),
-    this.filterForm.controls['departmentId'].valueChanges,
-    this.filterForm.controls['roleId'].valueChanges
+    this.filterForm.controls['department'].valueChanges,
+    this.filterForm.controls['role'].valueChanges
   ]).pipe(
-    map(([users, departmentId, roleId]: [UserModel[], string, number]) => {
-      console.log(users)
+    map(([users, department, role]) => {
       return users
-        .filter(
-          user  => user.departmentId === +departmentId && user.roleId === +roleId
-          // user => {
-          //   if (user.departmentId === +departmentId && user.roleId === +roleId) {
-          //     console.log(user)
-          //     return user;
-          //   } else return [];
-          // }
+        .filter(user  =>
+          user.departmentId === +department.id && user.roleId === role.id
         )
+        .map(user => {
+          return {
+            id: user.id,
+            email: user.email,
+            role: role.role,
+            department: department.name,
+          }
+        })
     })
   )
-
-  // click = () => {
-  //   console.log(this.list$)
-  // }
-
 
   constructor(private _departmentService: DepartmentService, private _userService: UserService, private _roleService: RoleService) {
   }

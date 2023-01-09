@@ -4,21 +4,20 @@
     <form [formGroup]="filterForm">
       <mat-form-field appearance="fill">
         <mat-label>Choose an option</mat-label>
-        <mat-select formControlName="departmentId">
-          <mat-option *ngFor="let item of departmentList$ | async" [value]="item.id">
+        <mat-select formControlName="department">
+          <mat-option *ngFor="let item of departmentList$ | async" [value]="item">
             {{ item.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
       <div>
         <mat-label style="display: block;">Choose a role</mat-label>
-        <mat-radio-group formControlName="roleId">
-          <mat-radio-button *ngFor="let item of roleList$ | async" [value]="item.id">
+        <mat-radio-group formControlName="role">
+          <mat-radio-button *ngFor="let item of roleList$ | async" [value]="item">
             {{ item.role }}
           </mat-radio-button>
         </mat-radio-group>
       </div>
-
     </form>
   </mat-card-content>
 </mat-card>
